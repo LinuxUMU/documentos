@@ -123,7 +123,7 @@
 \renewcommand{\thechapter}{\Roman{chapter}}
 \titleformat{\chapter}[display]
 {\CAPS\fillast\scshape}
-{\uppercase{Capítulo} \thechapter}{0pt}{\uppercase{#1}\\}[]
+{~\\\uppercase{Capítulo} \thechapter}{0pt}{\uppercase{#1}\\}[]
 \titlespacing{\chapter}
 {0pt}{0pt}{0pt}
 
@@ -137,7 +137,7 @@
 \renewcommand{\thesection}{\arabic{section}}
 \titleformat{\section}[runin]
 {\normalfont\bfseries}
-{Art. \textbf{\thesection.-}}{.3em}
+{~\\Art. \textbf{\thesection.-}}{.3em}
 {\ifthenelse{\equal{#1}{}}{}{\textbf{#1.}}}
 \titlespacing{\section}
 {0pt}{0pt}{0.7em}
