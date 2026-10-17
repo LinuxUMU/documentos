@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{bylaws}[2020/05/17 by G. Baker]
+\ProvidesClass{estatutos}[2026/10/16 by arf20 based on 2020/05/17 by G. Baker]
 
 \LoadClass[12pt]{report}
 
@@ -7,9 +7,9 @@
 %% Optional arguments
 
 % draft argument to create a draft watermark
+\RequirePackage{draftwatermark}
 \DeclareOption{draft}{
-  \RequirePackage{draftwatermark}
-  \SetWatermarkText{DRAFT}
+  \SetWatermarkText{BORRADOR}
 }
 
 %% Use the report class as a base. All options passed to this file get
@@ -35,43 +35,31 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Typefaces
 
-%\RequirePackage{fontspec}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[osf]{libertinus-type1}
+\RequirePackage{microtype}
+\SetTracking{encoding=T1, shape=sc}{60}
+\SetTracking{encoding=T1, family=*}{10}
 
-% Default typefaces
-%\setmainfont[
-%  Mapping=tex-text,
-%  Ligatures=TeX,
-%  Numbers=Lowercase,
-%  UprightFeatures={
-%    Numbers=Lowercase,
-%    SmallCapsFeatures={
-%      Letters=UppercaseSmallCaps,
-%      LetterSpace=6}},
-%  BoldFeatures={
-%    Numbers=Lowercase,
-%    SmallCapsFeatures={
-%      Letters=UppercaseSmallCaps,
-%      LetterSpace=6}},
-%  ]{Libertinus Serif}
+% Title typeface: Display variant, spaced for all-caps titles
+\newcommand{\TitleFont}{%
+  \libertinusDisplay
+  \spaceskip=1.3\fontdimen2\font
+    plus 1.3\fontdimen3\font
+    minus 1.3\fontdimen4\font
+  \lsstyle
+}
 
-%% Title typeface
-% Creates a style for the title. Meant to be used in all caps, hence the
-% extra spacing and lack of kerning.
-%\newfontfamily\TitleFont[UprightFeatures={
-%  LetterSpace=10,
-%  WordSpace=1.3,
-%  Kerning=Off}
-%]{Libertinus Serif Display}
+% General-purpose display typeface, without added tracking
+\newcommand{\DisplayFont}{\libertinusDisplay}
 
-% Creates a general purpose display style for titles. Meant for standard
-% text (not all caps)
-%\newfontfamily\DisplayFont[]{Libertinus Serif Display}
-
-% Creates a spaced version of the standard typeface, for use in all
-% caps. Will be used for article headings.
-%\newfontfamily\CAPS[LetterSpace=10,
-%  Kerning=Off,
-%  WordSpace=1.05]{Libertinus Serif}
+% Standard Libertinus Serif, spaced for all-caps headings
+\newcommand{\CAPS}{%
+  \spaceskip=1.05\fontdimen2\font
+    plus 1.05\fontdimen3\font
+    minus 1.05\fontdimen4\font
+  \lsstyle
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Spacing
@@ -92,24 +80,29 @@
   \begin{titlepage}
     \begin{center}
       \vspace*{13\baselineskip}
-      {\LARGE \MakeUppercase{\@title}\par}
+      {\LARGE \TitleFont \MakeUppercase{\@title}\par}
       \vspace{1.5em}
-      {\LARGE \@date \par}
+      {\LARGE \DisplayFont \@date \par}
     \end{center}
   \end{titlepage}
 }
 
 % The \doctitle command produces a title heading at the start of a page
 % and can be used multiple times in a file
+%\newcounter{chaptergroup}
 \newcommand{\doctitle}[2][]{
   % reset the article (chapter) counter and page counter
   \setcounter{chapter}{0}
-  \renewcommand*{\theHchapter}{chX.\the\value{chapter}}
-  \setcounter{page}{1}
+  %\renewcommand*{\theHhapter}{chX.\the\value{chapter}}
+  %\newcounter{articlegroup}
+  %\renewcommand*{\theHchapter}{group\arabic{articlegroup}.\arabic{chapter}}
+  %\renewcommand*{\theHchapter}{group\arabic{chaptergroup}.\arabic{chapter}}
+  \counterwithout*{section}{chapter}
+  \setcounter{page}{2}
   % format the title
-  \centerline{\large
+  \centerline{\large \TitleFont
       \MakeUppercase{#2}}
-  \centerline{{\large #1}}
+  \centerline{{\large \DisplayFont #1}}
   \vspace{\baselineskip}
   }
 
@@ -129,8 +122,8 @@
 %% Restyle the report class's chapter heading as an Article heading
 \renewcommand{\thechapter}{\Roman{chapter}}
 \titleformat{\chapter}[display]
-{\fillast\scshape}
-{\uppercase{Article} \thechapter}{0pt}{\uppercase{#1}\\}[]
+{\CAPS\fillast\scshape}
+{\uppercase{Capítulo} \thechapter}{0pt}{\uppercase{#1}\\}[]
 \titlespacing{\chapter}
 {0pt}{0pt}{0pt}
 
@@ -144,7 +137,7 @@
 \renewcommand{\thesection}{\arabic{section}}
 \titleformat{\section}[runin]
 {\normalfont\bfseries}
-{Section \textbf{\thesection.}}{.3em}
+{Art. \textbf{\thesection.-}}{.3em}
 {\ifthenelse{\equal{#1}{}}{}{\textbf{#1.}}}
 \titlespacing{\section}
 {0pt}{0pt}{0.7em}
@@ -158,11 +151,11 @@
 % Changes the indent of the subsections
 \setdefaultleftmargin{4em}{3.17em}{1.7em}{1.7em}{1em}{1em}
 % Changes the numbering styles for subsections and sections
-\renewcommand{\labelenumi}{\theenumi\textbf{.}}
+\renewcommand{\labelenumi}{\theenumi\textbf{.-}}
 \renewcommand{\theenumi}{\textbf{\thesection.\arabic{enumi}}}
-\renewcommand{\labelenumii}{\theenumii\textbf{.}}          
+\renewcommand{\labelenumii}{\theenumii\textbf{.-}}
 \renewcommand{\theenumii}{\textbf{\theenumi.\arabic{enumii}}}
-\renewcommand{\theenumiii}{\textbf{\Alph{enumiii}}}          
+\renewcommand{\theenumiii}{\textbf{\Alph{enumiii}}}
 
 %% The \sub command augments the \item command, allowing for a title
 \newcommand{\sub}[1][]{
@@ -175,8 +168,9 @@
 
 % For automatic reference links
 \RequirePackage{hyperref}
+%\hypersetup{hypertexnames=false}
 % automatically format article cross-reference
-\newcommand{\artref}[1]{Article \ref{#1}}
+\newcommand{\artref}[1]{Art. \ref{#1}}
 
 % For optional line numbers
 \RequirePackage{lineno}
